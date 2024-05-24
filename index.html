@@ -117,9 +117,7 @@
             "cool": "huj",
             "warm": "gram",
             "made": "bik",
-            "author": "lekha",
-            "nigga": "blakboi",
-            "nigger": "blakboi"
+            "author": "lekha"
         };
 
         const grammarRules = {
@@ -157,13 +155,19 @@
             const inputText = document.getElementById("inputText").value.toLowerCase();
             const words = inputText.match(/[\w']+|[.,!?;:]/g); // Separate words and punctuation
             let translatedWords = words.map(word => {
-                if (vocabulary[word]) {
-                    return vocabulary[word];
+                // Check if the word is plural (ends with 's')
+                const isPlural = word.endsWith('s') && word.length > 1 && vocabulary[word.slice(0, -1)];
+                let translatedWord = isPlural ? vocabulary[word.slice(0, -1)] : vocabulary[word];
+
+                if (translatedWord) {
+                    if (isPlural) translatedWord += 'se'; // Add 'se' for plurals
                 } else if (/[.,!?;:]/.test(word)) {
-                    return word; // Keep punctuation as is
+                    translatedWord = word; // Keep punctuation as is
                 } else {
-                    return word; // For words not in vocabulary
+                    translatedWord = word; // For words not in vocabulary
                 }
+
+                return translatedWord;
             });
 
             // Applying simple SOV structure and relative pronoun rule
